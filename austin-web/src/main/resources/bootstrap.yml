@@ -1,0 +1,88 @@
+server:
+  port: ${SERVER_PORT:8080}
+  servlet:
+    context-path: /v@version.major@
+  tomcat:
+    #等待队列长度
+    accept-count: 100
+    #最大工作线程数
+    max-threads: 200
+    #最小工作线程数
+    min-spare-threads: 10
+    #最大链接数
+    max-connections: 10000
+    #链接建立超时时间ms
+    connection-timeout: 20000
+
+#多个地方用到的nacos信息被提出来，供其他地方用变量引用
+nacos:
+  config:
+    server-addr: ${CONFIG_SERVER_ADDRESS:192.168.56.10:8848}
+    namespace: ${CONFIG_NAMESPACE:}
+    group: ${CONFIG_GROUP:@project.version@}
+
+spring:
+  application:
+    name: @project.artifactId@
+  profiles:
+    active: business, ${ACTIVE_PROFILE:dev}, error-exclusions
+  cloud:
+    nacos:
+      config:
+        server-addr: ${nacos.config.server-addr}
+        namespace: ${nacos.config.namespace}
+        group: ${nacos.config.group}
+        file-extension: yaml
+      discovery:
+        metadata:
+          version: v@project.version@
+        cluster-name: ${REGISTER_CLUSTER:DEFAULT}
+    service-registry:
+      auto-registration:
+        enabled: ${AUTO_REGISTRATION:true}
+    sentinel:
+      datasource:
+        system:
+          nacos:
+            username: ${spring.cloud.nacos.username:}
+            password: ${spring.cloud.nacos.password:}
+            server-addr: ${nacos.config.server-addr}
+            namespace: ${nacos.config.namespace}
+            group-id: ${nacos.config.group}
+            data-id: @project.artifactId@-sentinel-system.json
+            data-type: json
+            rule-type: system
+        flow:
+          nacos:
+            username: ${spring.cloud.nacos.username:}
+            password: ${spring.cloud.nacos.password:}
+            server-addr: ${nacos.config.server-addr}
+            namespace: ${nacos.config.namespace}
+            group-id: ${nacos.config.group}
+            data-id: @project.artifactId@-sentinel-flow.json
+            data-type: json
+            rule-type: flow
+        degrade:
+          nacos:
+            username: ${spring.cloud.nacos.username:}
+            password: ${spring.cloud.nacos.password:}
+            server-addr: ${nacos.config.server-addr}
+            namespace: ${nacos.config.namespace}
+            group-id: ${nacos.config.group}
+            data-id: @project.artifactId@-sentinel-degrade.json
+            data-type: json
+            rule-type: degrade
+
+management:
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+logging:
+  file:
+    path: ${LOG_HOME:target/logs}
+
+mybatis:
+  mapper-locations:
+    - classpath:dao/*.xml
+    - classpath*:com/**/mapper/*.xml
