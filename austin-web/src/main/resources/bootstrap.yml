@@ -1,7 +1,7 @@
 server:
   port: ${SERVER_PORT:8080}
   servlet:
-    context-path: /v@version.major@
+    context-path: /@version.major@
   tomcat:
     #等待队列长度
     accept-count: 100
@@ -17,15 +17,14 @@ server:
 #多个地方用到的nacos信息被提出来，供其他地方用变量引用
 nacos:
   config:
+#    server-addr: ${CONFIG_SERVER_ADDRESS:192.168.33.33:8848}
     server-addr: ${CONFIG_SERVER_ADDRESS:192.168.56.10:8848}
-    namespace: ${CONFIG_NAMESPACE:}
+    namespace: ${CONFIG_NAMESPACE:deb5b24f-23cb-4ac7-b80c-d33ce3a421d5}
     group: ${CONFIG_GROUP:@project.version@}
 
 spring:
   application:
     name: @project.artifactId@
-  profiles:
-    active: business, ${ACTIVE_PROFILE:dev}, error-exclusions
   cloud:
     nacos:
       config:
@@ -33,50 +32,50 @@ spring:
         namespace: ${nacos.config.namespace}
         group: ${nacos.config.group}
         file-extension: yaml
-      discovery:
-        metadata:
-          version: v@project.version@
-        cluster-name: ${REGISTER_CLUSTER:DEFAULT}
-    service-registry:
-      auto-registration:
-        enabled: ${AUTO_REGISTRATION:true}
-    sentinel:
-      datasource:
-        system:
-          nacos:
-            username: ${spring.cloud.nacos.username:}
-            password: ${spring.cloud.nacos.password:}
-            server-addr: ${nacos.config.server-addr}
-            namespace: ${nacos.config.namespace}
-            group-id: ${nacos.config.group}
-            data-id: @project.artifactId@-sentinel-system.json
-            data-type: json
-            rule-type: system
-        flow:
-          nacos:
-            username: ${spring.cloud.nacos.username:}
-            password: ${spring.cloud.nacos.password:}
-            server-addr: ${nacos.config.server-addr}
-            namespace: ${nacos.config.namespace}
-            group-id: ${nacos.config.group}
-            data-id: @project.artifactId@-sentinel-flow.json
-            data-type: json
-            rule-type: flow
-        degrade:
-          nacos:
-            username: ${spring.cloud.nacos.username:}
-            password: ${spring.cloud.nacos.password:}
-            server-addr: ${nacos.config.server-addr}
-            namespace: ${nacos.config.namespace}
-            group-id: ${nacos.config.group}
-            data-id: @project.artifactId@-sentinel-degrade.json
-            data-type: json
-            rule-type: degrade
+#      discovery:
+#        metadata:
+#          version: v@project.version@
+#        cluster-name: ${REGISTER_CLUSTER:DEFAULT}
+#    service-registry:
+#      auto-registration:
+#        enabled: ${AUTO_REGISTRATION:true}
+#    sentinel:
+#      datasource:
+#        system:
+#          nacos:
+#            username: ${spring.cloud.nacos.username:}
+#            password: ${spring.cloud.nacos.password:}
+#            server-addr: ${nacos.config.server-addr}
+#            namespace: ${nacos.config.namespace}
+#            group-id: ${nacos.config.group}
+#            data-id: @project.artifactId@-sentinel-system.json
+#            data-type: json
+#            rule-type: system
+#        flow:
+#          nacos:
+#            username: ${spring.cloud.nacos.username:}
+#            password: ${spring.cloud.nacos.password:}
+#            server-addr: ${nacos.config.server-addr}
+#            namespace: ${nacos.config.namespace}
+#            group-id: ${nacos.config.group}
+#            data-id: @project.artifactId@-sentinel-flow.json
+#            data-type: json
+#            rule-type: flow
+#        degrade:
+#          nacos:
+#            username: ${spring.cloud.nacos.username:}
+#            password: ${spring.cloud.nacos.password:}
+#            server-addr: ${nacos.config.server-addr}
+#            namespace: ${nacos.config.namespace}
+#            group-id: ${nacos.config.group}
+#            data-id: @project.artifactId@-sentinel-degrade.json
+#            data-type: json
+#            rule-type: degrade
 
-management:
-  metrics:
-    tags:
-      application: ${spring.application.name}
+#management:
+#  metrics:
+#    tags:
+#      application: ${spring.application.name}
 
 logging:
   file:
